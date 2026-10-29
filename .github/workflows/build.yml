@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - run: cargo test --bin fluxia
+
+      - run: cargo build --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fluxia-windows-x64
+          path: target/release/fluxia.exe
+          if-no-files-found: error
